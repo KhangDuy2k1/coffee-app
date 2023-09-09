@@ -12,6 +12,9 @@ const Detail = ({navigation, data }) => {
     if(soluong <= 0){
       return alert("chưa nhập sô lượng");
     }
+    if(soluong > data.volume){
+      return alert("nhập quá số lượng đang có");
+    }
     const param: any= {
       "coffeeitem_id": data.id,
       "quantity": soluong,

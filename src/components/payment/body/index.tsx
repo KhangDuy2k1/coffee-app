@@ -1,31 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-const products = [
-  { id: '1', name: 'Cappuccino', price: 50000,  isFavourite: false, image: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg" },
-  { id: '2', name: 'Cappuccino', price: 60000,  isFavourite: false, image: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg" },
-  { id: '3', name: 'Cafe Mocha', price: 70000,  isFavourite: false, image: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg" },
-  { id: '4', name: 'Cafe Mocha', price: 30000,  isFavourite: true,  image: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg" },
-  { id: '5', name: 'Cafe Mocha', price: 40000,  isFavourite: false, image: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg" },
-  { id: '6', name: 'Cafe Mocha', price: 70000,  isFavourite: false, image: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg" },
-  { id: '7', name: 'Product 1', price: 30000,  isFavourite: false, image: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg" },
-  { id: '8', name: 'Product 1', price: 80000,  isFavourite: false, image: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg" },
-  // Thêm các sản phẩm khác vào đây
-];
+import { getPayment } from '../../../api/payment';
 
 const Body = () => {
-
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchPayment = async () => {
+      try{
+        const res = await getPayment();
+        setData(res.orders.order);
+        
+      }catch (error: any){
+        if(error.response?.status === 400 && error.response?.data.success === false){
+          alert("chưa thanh toán đơn hàng nào");
+        }
+      }
+      
+     
+    }
+    fetchPayment();
+  },[]);
   const renderItem = ({ item }) => (
     <View style={styles.product}>
-        <Image source={{uri: item.image}} style={styles.productImage} />
+        <Image source={{uri: item.coffeeItem_id.image}} style={styles.productImage} />
         <View
           style={styles.productName}>
           <View>
-          <Text style={{height: 20, fontWeight: 'bold', fontSize: 16, }}>{item.name}</Text>
-          <Text style={ {fontSize: 14}}>{item.name}</Text>
-          <Text style={{marginTop: 20,  fontSize: 14, fontWeight: 'bold', color: '#e6ccb3'}}>{item.price} VND</Text>
+          <Text style={{height: 20, fontWeight: 'bold', fontSize: 16, }}>{item.coffeeItem_id.name}</Text>
+          <Text style={ {fontSize: 14}}>{item.coffeeItem_id.name}</Text>
+          <Text style={{marginTop: 20,  fontSize: 14, fontWeight: 'bold', color: '#e6ccb3'}}>{item.coffeeItem_id.price} VND</Text>
           </View>
-          <View>
+          <View style={{marginLeft: 20}}>
+          <Text style={{fontSize: 17, color: '#dfbf9f', alignSelf: 'center'}}>Số lượng : {item.quantity}</Text>
           <Text style={{fontSize: 17, fontWeight: 'bold', color: '#a3a375', }}>Đã Thanh Toán</Text>
           </View>
         
@@ -36,7 +42,7 @@ const Body = () => {
   return (
     <View style={styles.containerProduct}>
       <FlatList
-        data={products}
+        data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
@@ -59,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: "flex-start",
     marginVertical: 5,
     marginHorizontal: 10,
     paddingHorizontal: 5,
@@ -74,8 +80,9 @@ const styles = StyleSheet.create({
   productName: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     marginTop: 10,
+    marginLeft: 20,
     fontSize: 14,
     color: '#21130d',
   },

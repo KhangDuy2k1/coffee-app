@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const data: any = error.response?.data;
     const rfToken = await getTokenRf();
-    if (data?.success === false && data?.mes === "token đã hết hạn") {
+    if (data?.success === false && data?.mes === "jwt expired") {
       try{
         const res = await refeshToken(rfToken);
         await saveToken(res.accessToken);

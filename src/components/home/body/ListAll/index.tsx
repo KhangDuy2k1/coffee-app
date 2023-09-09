@@ -29,9 +29,7 @@ const ProductList = ({route}) => {
     }
     return data;
   }, [category, search])
-   console.log(productFilter);
    const likeCoffee = async (id: string) => {
-    console.log(id);
     try{
       const res = await likeById(id);
       if(res){
@@ -61,7 +59,8 @@ const ProductList = ({route}) => {
         <View
           style={styles.productName}>
           <Text style={{fontWeight: 'bold', fontSize: 16}}>{item.name}</Text>
-          <Text style={ {fontSize: 14}}>{item.name}</Text>
+          <Text style={ {fontSize: 14, color: '#d9b38c'}}>{item.name}</Text>
+          <Text style={styles.productVolume}>{item.volume} sản phẩm</Text>
           <Text style={styles.productPrice}>{item.price} vnd</Text>
         </View>
     
@@ -125,8 +124,13 @@ const styles = StyleSheet.create({
   },
   productPrice:{
     fontSize: 15,
-    marginTop: 20,
+    marginTop: 5,
     fontWeight: 'bold',
+    color: '#21130d',
+  },
+  productVolume: {
+    fontSize: 15,
+    marginTop: 5,
     color: '#21130d',
   },
   iconC: {
