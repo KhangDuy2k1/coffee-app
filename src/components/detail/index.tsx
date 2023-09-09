@@ -1,13 +1,42 @@
-import React from 'react';
-import {SafeAreaView, StyleSheet, View, Text, Image, Button} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {SafeAreaView, StyleSheet, View, Text, Image, Button, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-const Detail = ({navigation}) => {
-  const handlePaymentPress = () => {
+import { AntDesign } from '@expo/vector-icons'; 
+import { getProductById } from '../../api/product';
+import { getToken } from '../../utils/asyncStorage';
+import { paymentApi } from '../../api/payment';
+const Detail = ({navigation, data }) => {
+  const [soluong, setSoluong] = useState<number>(0);
+  const handlePaymentPress = async () => {
+    if(soluong <= 0){
+      return alert("chưa nhập sô lượng");
+    }
+    const param: any= {
+      "coffeeitem_id": data.id,
+      "quantity": soluong,
+      "total": soluong
+    }
+    try{
+      const res = await paymentApi(param);
+      if(res){
+        alert(res.mes);
+      }
+    }catch(error){
+      alert("thanh toán không thành công");
+    }
   }
+  const handlePlus = () => {
+    const current: number = soluong + 1;
+    setSoluong(current)
+  }
+  const handleMinus = () => {
+    const current: number = soluong - 1;
+    setSoluong(current)
+  }
+  
   return (
-    <SafeAreaView style={{backgroundColor: 'white'}}>
+    <SafeAreaView style={{backgroundColor: 'white', flex: 1, width: "100%"}}>
       <View style={style.header}>
         <Icon name="arrow-back-ios" size={28}  onPress={navigation.goBack}/>
         <Text style={{fontSize: 20, fontWeight: 'bold'}}>Details</Text>
@@ -19,7 +48,7 @@ const Detail = ({navigation}) => {
             alignItems: 'center',
             height: 280,
           }}>
-          <Image source={{uri: "https://img.thuthuatphanmem.vn/uploads/2018/10/04/anh-dep-ben-ly-cafe-den_110730392.jpg"}} style={{height: 220, width: 220, borderRadius: 30}} />
+          <Image source={{uri: data.image}} style={{height: 220, width: 220, borderRadius: 30}} />
         </View>
         <View style={style.details}>
           <View
@@ -33,35 +62,32 @@ const Detail = ({navigation}) => {
               Capuchino
             </Text>
             <View style={style.iconContainer}>
-              <Icon name="favorite-border" color='#ffc266' size={25} />
+              <Icon name="favorite-border" color={data.starts === 2 ? 'red' : 'black'} size={25} />
+              
             </View>
           </View>
           <Text style={style.detailsText}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries.
+            {data.desc}
           </Text>
           <View style={{marginTop: 40, marginBottom: 40}}>
             {/* <SecondaryButton title="Add To Cart" /> */}
             <Text style={style.text}>
-             50000 vnd
+            {data.price} vnd
           </Text>
           </View>
+          <View style={style.sl}>
+          <TouchableOpacity style={style.plus} onPress={handleMinus}>
+          <AntDesign name="minus" size={20} color="#b37700" />
+          </TouchableOpacity>
+          <Text style={{ fontSize: 20, color: 'red'}}>{soluong}</Text>
+          <TouchableOpacity style={style.minus} onPress={handlePlus}>
+          <AntDesign name="plus" size={20} color="#b37700" />
+          </TouchableOpacity>
+          </View>
           <View style={style.containerButton}>
-          <Button
-        title="Payment"
-        onPress={handlePaymentPress}
-        color="#3498db"
-        style={style.button}
-      />
-      <Icon
-        name="payment"
-        size={24}
-        color="#3498db"
-        style={style.icon}
-      />
+          <TouchableOpacity style={style.button1} onPress={handlePaymentPress} >
+           <Text style={style.buttonText}>Thanh toán</Text>
+          </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -80,12 +106,12 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 40,
     paddingBottom: 60,
-    backgroundColor: '#ffc266',
+    backgroundColor: '#e0e0d1',
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
   },
   iconContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffb3',
     height: 50,
     width: 50,
     justifyContent: 'center',
@@ -121,6 +147,30 @@ const style = StyleSheet.create({
   icon: {
     marginTop: 10,
   },
+  button1: {
+    height: 45,
+    width: "80%",
+    backgroundColor: '#b37700',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 30,
+    marginTop: 30,
+  },
+  buttonText: {
+    alignSelf: 'center',
+    color: 'white',
+    fontSize: 16,
+  },
+  sl: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+  },
+  plus: {
+    marginRight: 10
+  },
+  minus: {
+    marginLeft: 10
+  }
 });
 
 export default Detail;

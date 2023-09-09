@@ -17,6 +17,8 @@ const BottomTabNavigator = () => {
 
           if (route.name === 'Trang chủ') {
             iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Tìm Kiếm') {
+            return <MaterialIcons name="search" size={size} color={color} />
           } else if (route.name === 'Thanh Toán') {
             return <MaterialIcons name="payment" size={size} color={color} />
           } else if (route.name === 'Yêu Thích') {
@@ -27,7 +29,8 @@ const BottomTabNavigator = () => {
         },
       })}
     >
-      <Tab.Screen name="Trang chủ" component={HomeScreen} />
+      <Tab.Screen name="Trang chủ" component={HomeScreen} initialParams={{ param: false }}/>
+      <Tab.Screen name="Tìm Kiếm" component={HomeScreen} initialParams={{ param: true }}/>
       <Tab.Screen name="Thanh Toán" component={PaymentScreen} />
       <Tab.Screen name="Yêu Thích" component={FavouriteScreen} />
     </Tab.Navigator>

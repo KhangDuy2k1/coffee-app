@@ -21,12 +21,12 @@ const Body = () => {
         <View
           style={styles.productName}>
           <View>
-          <Text style={{fontWeight: 'bold', fontSize: 16}}>{item.name}</Text>
+          <Text style={{height: 20, fontWeight: 'bold', fontSize: 16, }}>{item.name}</Text>
           <Text style={ {fontSize: 14}}>{item.name}</Text>
+          <Text style={{marginTop: 20,  fontSize: 14, fontWeight: 'bold', color: '#e6ccb3'}}>{item.price} VND</Text>
           </View>
           <View>
-          <Text style={{fontSize: 14, fontWeight: 'bold', alignSelf: 'center'}}>{item.price} VND</Text>
-          <Text style={{fontSize: 17, fontWeight: 'bold', color: 'red'}}>Đã Thanh Toán</Text>
+          <Text style={{fontSize: 17, fontWeight: 'bold', color: '#a3a375', }}>Đã Thanh Toán</Text>
           </View>
         
         </View>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 10,
     height: 140,
-    backgroundColor: "#ffcc80",
+    backgroundColor: "#ffffff",
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   },
   productName: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: "space-around",
     marginTop: 10,
     fontSize: 14,

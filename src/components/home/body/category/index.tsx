@@ -7,13 +7,9 @@ import { useSelector } from 'react-redux';
 import { selectClick } from '../../../../store/userslice';
 import { getCategory } from '../../../../api/category';
 const categories: ICategory[] = [
-  { id: '1', name: 'Cafe truyền thống' },
-  { id: '2', name: 'Espresso' },
-  { id: '3', name: 'Latte Macchiato' },
-  { id: '4', name: 'Cappuccino' },
-  { id: '5', name: 'Cafe Latte' },
-  { id: '6', name: 'Cafe Mocha' },
-  { id: '7', name: 'Americano' }
+  { id: '1', title: 'Cafe truyền thống' },
+  { id: '2', title: 'Espresso' },
+
 ];
 
 
@@ -25,8 +21,8 @@ const CategoryList = () => {
   const dispatch = useDispatch();
   const handlePress = (item: any) => {
     setId(item.id);
-    dispatch(updateClick(item.name));
-    dispatch(updateCategory(item.name));
+    dispatch(updateClick(item.title));
+    dispatch(updateCategory(item._id));
   };
   useEffect(() => {
     const fetchCategory = async () => {
@@ -58,6 +54,7 @@ const CategoryList = () => {
 
 const styles = StyleSheet.create({
   containerCate: {
+    width: 350,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
@@ -67,14 +64,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     marginRight: 12,
-    backgroundColor: 'white',
+    backgroundColor: '#c2c2a3',
     borderRadius: 20,
   },
   categoryItemClick: {
     paddingHorizontal: 10,
     paddingVertical: 8,
     marginRight: 12,
-    backgroundColor: 'red',
+    backgroundColor: '#e69900',
     borderRadius: 20,
   },
   categoryText: {

@@ -4,15 +4,13 @@ import Search from './search';
 import CategoryList from './category';
 import ProductList from './ListAll';
 import ProductListKm from './ListKm';
-export default function Body({navigation}) {
+import SearchModal from '../../../modal/search';
+export default function Body({navigation, init}) {
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-      <Search/>
+      {init && <SearchModal/>}
       <CategoryList/>
       <ProductList route={navigation}/>
-      <ProductListKm route={navigation}/> 
-      </ScrollView>
     </View>
   );
 }
@@ -20,8 +18,7 @@ export default function Body({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ccffff',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
+    backgroundColor: 'white',
+    justifyContent: 'flex-start',
   },
 });

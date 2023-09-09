@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet,ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet,Image, SafeAreaView } from 'react-native';
 import { login } from '../../api/login';
 import { saveToken, saveTokenRf, getToken, getTokenRf } from '../../utils/asyncStorage';
 import { updateUsername } from '../../store/userslice';
 import { useDispatch } from 'react-redux';
+import { AntDesign } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 const Login = ({route} ) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -30,79 +32,122 @@ const Login = ({route} ) => {
   };
 
   return (
-    <ImageBackground
-    source={{uri: 'https://banner2.cleanpng.com/20190204/abf/kisspng-white-coffee-cafe-espresso-coffee-cup-in-house-service-support-connect-vending-5c585865ce4cb1.073233151549293669845.jpg'}} // Điều chỉnh đường dẫn tới hình ảnh của bạn
-    style={styles.backgroundImage}
-    >
-    <View style={styles.container}>
-      <Text style={styles.title}>Đăng nhập</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Tên đăng nhập"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Mật khẩu"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TouchableOpacity style={styles.buttonDk} onPress={handleRegister}>
-      <Text style={styles.text}>Đăng Ký</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Đăng nhập</Text>
-      </TouchableOpacity>
-    </View>
-    </ImageBackground>
+
+    <SafeAreaView style={styles.container}>
+         <Image source= {{uri: "https://www.acouplecooks.com/wp-content/uploads/2021/08/Cafe-Au-Lait-001s.jpg"}} style={styles.image} />
+         <Text style={styles.login}>Đăng Nhập</Text>
+         <View style={styles.inputEmail}>
+         <AntDesign style={styles.icon} name="user" size={14} color="#b37700" />
+         <TextInput
+           placeholder="Tên đăng nhập"
+           value={username}
+           onChangeText={setUsername}
+          />
+         </View>
+         <View style={styles.inputPass}>
+         <MaterialCommunityIcons style={styles.icon} name="form-textbox-password" size={14} color="#b37700" />
+         <TextInput
+           placeholder="Mật khẩu"
+           secureTextEntry
+           value={password}
+           onChangeText={setPassword}
+          />
+         </View>
+        
+         <TouchableOpacity style={styles.button} onPress={handleLogin}>
+           <Text style={styles.buttonText}>Đăng nhập</Text>
+          </TouchableOpacity>
+         <View style={styles.bottom}>
+        <TouchableOpacity>
+         <Text style={styles.textL}>Quên mật Khẩu</Text>
+         </TouchableOpacity>
+         <Text>|</Text>
+         <TouchableOpacity onPress={handleRegister}>
+         <Text style={styles.textR}>Tạo Tài Khoản mới</Text>
+         </TouchableOpacity>
+         </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    justifyContent: 'center', 
-  },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'column',
     alignItems: 'center',
-    padding: 16,
+    backgroundColor: 'white',
   },
-  title: {
-    color: '#ffad33',
-    fontSize: 24,
-    marginBottom: 16,
+  image: {
+    marginTop: 40,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
   },
-  input: {
-    width: '100%',
+  login: {
+    marginTop: 30,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#b37700'
+  },
+  inputEmail: {
+    flexDirection: 'row',
     height: 40,
+    width: "80%",
+    marginTop: 30,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    borderColor: '#b37700',
+    alignItems: 'center',
+    borderRadius: 30,
     paddingHorizontal: 12,
-    marginBottom: 16,
+  },
+  inputPass: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 40,
+    marginTop: 30,
+    width: "80%",
+    borderWidth: 1,
+    borderColor: '#b37700',
+    borderRadius: 30,
+    paddingHorizontal: 12,
+  },
+  icon: {
+    marginRight: 10,
   },
   button: {
-    backgroundColor: '#ffad33',
+    height: 45,
+    width: "80%",
+    backgroundColor: '#b37700',
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 8,
+    borderRadius: 30,
+    marginTop: 30,
   },
   buttonText: {
-    color: '#b3ff66',
+    alignSelf: 'center',
+    color: 'white',
     fontSize: 16,
   },
+  bottom: {
+    marginTop: '30%',
+    width: "100%",
+    flexDirection: 'row',
+    justifyContent:"space-between",
+  },
+  textL: {
+    marginLeft: 10,
+    alignSelf: 'flex-start',
+    color: '#b37700'
+  },
+  textR: {
+    marginRight: 10,
+    alignSelf: 'flex-end',
+    color: '#b37700'
+  },
   text: {
+    
     color: '#b3ff66',
   },
-  buttonDk: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-  }
 });
 
 export default Login;

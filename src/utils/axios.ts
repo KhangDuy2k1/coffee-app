@@ -4,7 +4,7 @@ import { refeshToken } from '../api/refeshToken';
 
 const axiosInstance = Axios.create({
   timeout: 3 * 60 * 1000,
-  baseURL: "http://192.168.1.16:3000/api/",
+  baseURL: "http://192.168.2.143:3000/api/",
 });
 
 axiosInstance.interceptors.request.use(
@@ -26,26 +26,28 @@ axiosInstance.interceptors.request.use(
 
 let id: NodeJS.Timeout;
 
-// axiosInstance.interceptors.response.use(
-//   (response: AxiosResponse) => response,
-//   async (error: AxiosError) => {
-//     const data: any = error.response?.data;
-//     const rfToken = await getTokenRf();
-//     if (error.response?.status === 400 && data?.success === false) {
-//       try{
-//         const res = await refeshToken(rfToken);
-//         await saveToken(res.accessToken);
-//       } catch(error: any){
-//         // await saveToken("");
-//         // await saveTokenRf("");
-//         //alert(data.mes);
-//       }
+axiosInstance.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const data: any = error.response?.data;
+    const rfToken = await getTokenRf();
+    if (data?.success === false && data?.mes === "token đã hết hạn") {
+      try{
+        const res = await refeshToken(rfToken);
+        await saveToken(res.accessToken);
+      } catch(error: any){
+        await saveToken("");
+        await saveTokenRf("");
+        alert(data.mes);
+      }
       
-//     }
-//   }
-// );
+    }
+  }
+);
+
 
 export const sendGet = (url: string, params?: object) => axiosInstance.get(url, { params }).then((res) => res.data);
+export const sendGetById = (url: string, params?: object) => axiosInstance.get(url, { params }).then((res) => res);
 export const sendPost = (url: string, params?: object, queryParams?: object) => axiosInstance.post(url, params, { params: queryParams }).then((res) => res.data);
 export const sendPut = (url: string, params?: object) => axiosInstance.put(url, params).then((res) => res.data);
 export const sendPatch = (url: string, params?: object) => axiosInstance.patch(url, params).then((res) => res.data);

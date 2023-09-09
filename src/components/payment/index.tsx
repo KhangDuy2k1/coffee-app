@@ -6,7 +6,7 @@ import Body from './body';
 const Payment = () => {
   return (
     <View style={styles.container}>
-      <Header/>
+      <Text style={{height: 30, fontWeight: 'bold', fontSize: 16, alignSelf: "flex-start", marginTop: 8, marginLeft: 10}}>Các sản phẩm đã thanh toán</Text>
       <Body/>
     </View>
   );

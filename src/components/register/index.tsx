@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, ImageBackground, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, Image } from 'react-native';
 import { register } from '../../api/register';
+import { AntDesign } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 const Registration = ({navigation}) => {
   const [password, setPassword] = useState('');
 
@@ -42,99 +44,138 @@ const Registration = ({navigation}) => {
   };
 
   return (
-    <ImageBackground
-    source={{uri: 'https://banner2.cleanpng.com/20190204/abf/kisspng-white-coffee-cafe-espresso-coffee-cup-in-house-service-support-connect-vending-5c585865ce4cb1.073233151549293669845.jpg'}} // Điều chỉnh đường dẫn tới hình ảnh của bạn
-    style={styles.backgroundImage}
-    >
-    <View style={styles.container}>
-      <Text style={styles.title}>Đăng Ký Tài Khoản</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Số Điện Thoại"
-        placeholderTextColor='#bb99ff'
-        value={phoneNumber}
-        onChangeText={text => validatePhoneNumber(text)}
-      />
-       {!isValidPhoneNumber && (
-        <Text style={styles.errorText}>Please enter a valid phone number</Text>
-      )}
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor='#bb99ff'
-        value={email}
-        onChangeText={validateEmail}
-      />
-      {!isValidEmail && (
-        <Text style={styles.errorText}>Please enter a valid email address</Text>
-      )}
-      <TextInput
-        style={styles.input}
-        placeholder="Mật Khẩu"
-        placeholderTextColor='#bb99ff'
-        secureTextEntry
-        value={password}
-        onChangeText={text => setPassword(text)}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Đăng Ký</Text>
-      </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+         <Image source= {{uri: "https://www.acouplecooks.com/wp-content/uploads/2021/08/Cafe-Au-Lait-001s.jpg"}} style={styles.image} />
+         <Text style={styles.login}>Đăng Ký Tài Khoản</Text>
 
-      <TouchableOpacity style={styles.buttonD} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Đăng Nhập</Text>
-      </TouchableOpacity>
-    </View>
-    </ImageBackground>
+         <View style={styles.inputPhone}>
+         <AntDesign style={styles.icon} name="phone" size={14} color="#b37700" />
+         <TextInput
+           placeholder="Số điện thoại"
+           secureTextEntry
+           value={phoneNumber}
+           onChangeText={setPhoneNumber}
+          />
+         </View>
+         <View style={styles.inputEmail}>
+         <AntDesign style={styles.icon} name="user" size={14} color="#b37700" />
+         <TextInput
+           placeholder="Email"
+           value={email}
+           onChangeText={setEmail}
+          />
+         </View>
+         <View style={styles.inputPass}>
+         <MaterialCommunityIcons style={styles.icon} name="form-textbox-password" size={14} color="#b37700" />
+         <TextInput
+           placeholder="Mật khẩu"
+           secureTextEntry
+           value={password}
+           onChangeText={setPassword}
+          />
+         </View>
+        
+         <TouchableOpacity style={styles.button} onPress={handleRegister}>
+           <Text style={styles.buttonText}>Đăng Ký</Text>
+          </TouchableOpacity>
+         <View style={styles.bottom}>
+         <Text>|</Text>
+         <TouchableOpacity onPress={handleLogin}>
+         <Text style={styles.textR}>Đăng Nhập</Text>
+         </TouchableOpacity>
+         </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    width: '100%',
-    flex: 1,
-    justifyContent: 'center', 
-  },
-  title: {
-    color: '#ffad33',
-    fontSize: 24,
-    marginBottom: 16,
-  },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'column',
     alignItems: 'center',
-    padding: 16,
+    backgroundColor: 'white',
   },
-  input: {
-    width: '100%',
+  image: {
+    marginTop: 40,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+  },
+  login: {
+    marginTop: 30,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#b37700'
+  },
+  inputPhone: {
+    flexDirection: 'row',
     height: 40,
-    borderColor: '#ccc',
+    width: 300,
+    marginTop: 30,
     borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingLeft: 10,
-    color: '#a6ff4d'
+    borderColor: '#b37700',
+    alignItems: 'center',
+    borderRadius: 30,
+    paddingHorizontal: 12,
   },
-  errorText: {
-    color: 'red',
-    marginTop: 5,
+  inputEmail: {
+    flexDirection: 'row',
+    height: 40,
+    width: 300,
+    marginTop: 30,
+    borderWidth: 1,
+    borderColor: '#b37700',
+    alignItems: 'center',
+    borderRadius: 30,
+    paddingHorizontal: 12,
+  },
+  inputPass: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 40,
+    marginTop: 30,
+    width: 300,
+    borderWidth: 1,
+    borderColor: '#b37700',
+    borderRadius: 30,
+    paddingHorizontal: 12,
+  },
+  icon: {
+    marginRight: 10,
   },
   button: {
-    backgroundColor: '#ffad33',
+    height: 45,
+    width: 300,
+    backgroundColor: '#b37700',
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 8,
-  },
-  buttonD: {
-    marginTop: 10,
-    backgroundColor: '#ffad33',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    borderRadius: 30,
+    marginTop: 30,
   },
   buttonText: {
-    color: '#b3ff66',
+    alignSelf: 'center',
+    color: 'white',
     fontSize: 16,
+  },
+  bottom: {
+    marginTop: '30%',
+    width: "100%",
+    flexDirection: 'row',
+    justifyContent:"space-between",
+  },
+  textL: {
+    marginLeft: 10,
+    alignSelf: 'flex-start',
+    color: '#b37700'
+  },
+  textR: {
+    marginRight: 10,
+    alignSelf: 'flex-end',
+    color: '#b37700'
+  },
+  text: {
+    
+    color: '#b3ff66',
   },
 });
 

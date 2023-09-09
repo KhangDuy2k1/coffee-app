@@ -2,11 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Header from './header';
 import Body from './body';
-export default function Home({navigation}) {
+import Flast from './flashList';
+export default function Home({navigation, param}) {
+  
   return (
     <View style={styles.container}>
-      <Header/>
-      <Body navigation={navigation}/>
+      <Flast/>
+      <Body navigation={navigation} init={param}/>
     </View>
   );
 }
@@ -14,7 +16,7 @@ export default function Home({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ccffff',
+    backgroundColor: 'white',
     alignItems: 'center',
   },
 });
