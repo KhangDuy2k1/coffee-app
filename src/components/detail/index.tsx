@@ -3,11 +3,13 @@ import {SafeAreaView, StyleSheet, View, Text, Image, Button, TouchableOpacity} f
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AntDesign } from '@expo/vector-icons'; 
-import { getProductById } from '../../api/product';
-import { getToken } from '../../utils/asyncStorage';
-import { paymentApi } from '../../api/payment';
+import { PaymentOff, PaymentOn } from '../../api/payment';
+import { RadioButton } from 'react-native-paper';
+import { MaterialIcons } from '@expo/vector-icons'; 
 const Detail = ({navigation, data }) => {
   const [soluong, setSoluong] = useState<number>(0);
+  const [form, setForm] = useState<boolean>(false);
+  const [selectedValue, setSelectedValue] = useState('option1');
   const handlePaymentPress = async () => {
     if(soluong <= 0){
       return alert("chưa nhập sô lượng");
@@ -21,10 +23,19 @@ const Detail = ({navigation, data }) => {
       "total": soluong
     }
     try{
-      const res = await paymentApi(param);
-      if(res){
-        alert(res.mes);
+      if(selectedValue === 'off'){
+        const res = await PaymentOff(param);
+        if(res){
+          alert(res.mes);
+        }
       }
+      if(selectedValue === 'on'){
+        const res = await PaymentOn(param);
+        if(res){
+          alert(res.mes);
+        }
+      }  
+      
     }catch(error){
       alert("thanh toán không thành công");
     }
@@ -34,8 +45,21 @@ const Detail = ({navigation, data }) => {
     setSoluong(current)
   }
   const handleMinus = () => {
-    const current: number = soluong - 1;
+    let current: number;
+    if(soluong === 0){
+       current = 0;
+    }else{
+       current = soluong - 1;
+    }
+    
     setSoluong(current)
+  }
+  const handleFormThanhToan = () => {
+    if(form){
+      return setForm(false)
+    }
+    return setForm(true)
+
   }
   
   return (
@@ -65,12 +89,15 @@ const Detail = ({navigation, data }) => {
               Capuchino
             </Text>
             <View style={style.iconContainer}>
-              <Icon name="favorite-border" color={data.starts === 2 ? 'red' : 'black'} size={25} />
+              <Icon name="favorite-border" color={data.like ? 'red' : 'black'} size={25} />
               
             </View>
           </View>
           <Text style={style.detailsText}>
             {data.desc}
+          </Text>
+          <Text style={style.detailsText}>
+            {data.volume} mil
           </Text>
           <View style={{marginTop: 40, marginBottom: 40}}>
             {/* <SecondaryButton title="Add To Cart" /> */}
@@ -78,6 +105,8 @@ const Detail = ({navigation, data }) => {
             {data.price} vnd
           </Text>
           </View>
+          <View>
+    </View>
           <View style={style.sl}>
           <TouchableOpacity style={style.plus} onPress={handleMinus}>
           <AntDesign name="minus" size={20} color="#b37700" />
@@ -87,9 +116,25 @@ const Detail = ({navigation, data }) => {
           <AntDesign name="plus" size={20} color="#b37700" />
           </TouchableOpacity>
           </View>
+          <View style={style.containerButtonTt}>
+          <TouchableOpacity style={style.button1Tt} onPress={handleFormThanhToan} >
+           <MaterialIcons name="attach-money" size={20} color="#ffc266" />
+           <Text style={style.buttonText}>Phương thức thanh toán</Text>
+          </TouchableOpacity>
+          </View>
+          {form && <>
+          <RadioButton.Group
+             onValueChange={(value) => setSelectedValue(value)}
+             value={selectedValue}
+      >
+            <RadioButton.Item style={style.label} labelStyle={{ fontSize: 10 }} label="Thanh toán trực tiếp" value="off" />
+            <RadioButton.Item style={style.label} labelStyle={{ fontSize: 10 }} label="Thanh toán trực tuyến" value="on" />
+          </RadioButton.Group>
+      </>}
           <View style={style.containerButton}>
           <TouchableOpacity style={style.button1} onPress={handlePaymentPress} >
-           <Text style={style.buttonText}>Thanh toán</Text>
+          <MaterialIcons name="money" size={20} color="#ffc266" />
+           <Text style={style.buttonText1}>Thanh toán</Text>
           </TouchableOpacity>
           </View>
         </View>
@@ -135,6 +180,31 @@ const style = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
   },
+  containerButtonTt: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+
+  },
+  button1Tt: {
+    flexDirection: 'row',
+    height: 45,
+    width: "80%",
+    backgroundColor: '#b37700',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 30,
+    marginTop: 30,
+  },
+  label:{
+    height: 50,
+    marginTop: 10,
+    width: "80%",
+    backgroundColor: 'white',
+    borderRadius: 40,
+    borderColor: 'black',
+    alignSelf: 'center'
+  },
   containerButton: {
     flex: 1,
     flexDirection: 'row',
@@ -151,15 +221,24 @@ const style = StyleSheet.create({
     marginTop: 10,
   },
   button1: {
+    flexDirection: 'row',
+
     height: 45,
     width: "80%",
     backgroundColor: '#b37700',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 30,
-    marginTop: 30,
+    marginTop: 20,
   },
   buttonText: {
+    marginLeft: 5,
+    alignSelf: 'center',
+    color: 'white',
+    fontSize: 16,
+  },
+  buttonText1: {
+    marginLeft: 50,
     alignSelf: 'center',
     color: 'white',
     fontSize: 16,

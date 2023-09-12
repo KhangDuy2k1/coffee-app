@@ -1,25 +1,40 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, DevSettings } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { getProduct, likeById } from '../../../../api/product'
+import { getProduct, likeById, unLikeById } from '../../../../api/product'
+import StarRating from 'react-native-star-rating';
 import { useSelector } from "react-redux";
 import { selectClick, selectCategory, selectSearch } from '../../../../store/userslice';
+import { getStars } from '../../../../api/reviews';
+import { deleteListLike, getListLike, saveListLike } from '../../../../utils/asyncStorage';
 
 const ProductList = ({route}) => {
   const category = useSelector(selectCategory);
   const search = useSelector(selectSearch);
   const click = useSelector(selectClick);
   const [data, setData] = useState<any[]>([]);
+  const [star, setStar] = useState<number>(0);
+  const [change, setChange] = useState<string>();
+  const [likes, setLikes] = useState<any[] | null>();
   const handlePress = (formDetail: any) => {
     route.navigate('Detail', { data: formDetail });
   };
+  const [pick, setPick] = useState(false);
   useEffect(() => {
     const fetchProduct = async () => {
+      const list = await getListLike();
+      if(list !== null){
+        setLikes(JSON.parse(list));
+      }
       const res = await getProduct();
       setData(res.allCoffee.allCoffee);
+      
+      setChange("check");
     }
     fetchProduct()
   },[]);
+  
+
   const productFilter: any = useMemo(() => {
     if(category !== '') {
       return data.filter(p => p.category === category)
@@ -28,24 +43,69 @@ const ProductList = ({route}) => {
       return data.filter(p => p.name.includes(search))
     }
     return data;
-  }, [category, search])
-   const likeCoffee = async (id: string) => {
-    try{
-      const res = await likeById(id);
-      if(res){
-        alert(res.mes)
+  }, [change, category, search])
+   const handlePick = () => {
+      if(pick){
+        setPick(false);
       }
+      else setPick(true);
+   }
+   const likeCoffee = async (id: string) => {
+    let res;
+    try{
+      if(likes?.includes(id)){
+        res = await unLikeById(id);
+        
+        if(res){
+          const list = likes.filter(e => e !== id);
+          setLikes(list);
+          deleteListLike().then(async () => {
+            saveListLike(likes).then(async () => {
+              
+            });
+          });
+          alert(res.mes)
+        }
+      }else {
+        res = await likeById(id);
+        if(res){
+          
+          const list: string[] = likes ?? [];
+          list.push(id)
+          setLikes(list);
+
+          deleteListLike().then(async () => {
+            saveListLike(likes).then(async () => {
+              route.replace('Tab')
+            });
+          });
+          alert(res.mes)
+        }
+      }
+      
     }catch(error){
-      alert("Đã Like")
+      alert("Có Vấn đề")
     }
    }
-  const renderItem = ({ item }) => {
+  const renderItem =  ({ item }) => {
+    const getStar = async () => {
+      try{
+        const res = await getStars(item._id);
+        if(res){
+          setStar(res.starsMedium)
+        }
+      } catch(error: any){
+        setStar(0)
+      }
+    }
+    getStar()
     const formDetail: any = {
       id: item._id,
       image: item.image,
       name: item.name,
       price: item.price,
-      starts: item.starts,
+      starts: star | item.starts,
+      like: likes?.includes(item._id),
       volume: item.volume,
       category: item.category,
       desc: item.desc
@@ -60,15 +120,24 @@ const ProductList = ({route}) => {
           style={styles.productName}>
           <Text style={{fontWeight: 'bold', fontSize: 16}}>{item.name}</Text>
           <Text style={ {fontSize: 14, color: '#d9b38c'}}>{item.name}</Text>
-          <Text style={styles.productVolume}>{item.volume} sản phẩm</Text>
+          <Text style={styles.productVolume}>{item.volume} mil</Text>
+          <StarRating
+            disabled={true}
+            maxStars={5}
+            rating={star} // Điểm đánh giá sản phẩm
+            fullStarColor={'gold'} // Màu ngôi sao đầy
+            emptyStarColor={'gray'} // Màu ngôi sao trống
+            starSize={15} // Kích thước ngôi sao
+            containerStyle={{ width: 80 }}
+      />
           <Text style={styles.productPrice}>{item.price} vnd</Text>
         </View>
     
         <TouchableOpacity style={styles.iconC}  onPress={() => likeCoffee(item._id) }>
         <Icon
-          name={item.starts === 2 ? 'heart' : 'heart-o'}
+          name={likes?.includes(item._id) ? 'heart' : 'heart-o'}
           size={20}
-          color={item.starts !== 2 ? 'red' : 'gray'}
+          color={likes?.includes(item._id) ? 'red' : 'gray'}
         />
       </TouchableOpacity>
         </View>

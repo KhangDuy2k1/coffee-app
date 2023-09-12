@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet,Image, SafeAreaView } from 'react-native';
 import { login } from '../../api/login';
-import { saveToken, saveTokenRf, getToken, getTokenRf } from '../../utils/asyncStorage';
+import { saveToken, saveTokenRf, getToken, getTokenRf, saveIdUser, saveListLike } from '../../utils/asyncStorage';
 import { updateUsername } from '../../store/userslice';
 import { useDispatch } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons'; 
@@ -20,6 +20,8 @@ const Login = ({route} ) => {
       if (res) {
         await saveToken(res.accessToken);
         await saveTokenRf(res.refreshToken);
+        await saveIdUser(res.user._id);
+        await saveListLike(res.user.likedCoffeeItem);
         dispatch(updateUsername(res.accessToken));
       }
     } catch (error: any) {

@@ -21,15 +21,16 @@ const SearchModal = () => {
            value={text}
            onChangeText={setText}
           />
-    </View>
-    <TouchableOpacity style={styles.searchIcon} onPress={handlePress}>
-    <MaterialCommunityIcons
-          name="magnify"
-          size={24}
-          color="#8a8a8a"
+
+        <TouchableOpacity style={styles.searchIcon} onPress={handlePress}>
+             <MaterialCommunityIcons
+              style={styles.icon}
+             name="magnify"
+             size={24}
+             color="#8a8a8a"
           />
     </TouchableOpacity>
-        
+    </View> 
     </View>
 
     
@@ -42,19 +43,22 @@ const styles = StyleSheet.create({
     },
     input: {
         flexDirection: 'row',
-        height: 30,
-        width: 300,
+        height: 40,
+        width: 350,
         marginTop: 10,
         borderWidth: 1,
         borderColor: '#b37700',
         alignItems: 'center',
+        justifyContent: 'space-between',
         borderRadius: 30,
         paddingHorizontal: 12,
       },
       searchIcon: {
-        width: 50,
-        marginTop: 10,
+        width: 40,
         alignSelf: 'center',
+      },
+      icon: {
+        alignSelf: 'center'
       }
 })
 export default SearchModal;

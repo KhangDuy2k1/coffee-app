@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, DevSettings } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { getToken, saveToken } from '../../../utils/asyncStorage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +10,7 @@ const Header = () => {
     const Logout = async () => {
       dispatch(updateUsername(""));
       await AsyncStorage.removeItem('authToken');
+      DevSettings.reload();
     }
     const image = "https://cdn.popsww.com/blog/sites/2/2022/02/naruto-co-bao-nhieu-tap.jpg";
   return (

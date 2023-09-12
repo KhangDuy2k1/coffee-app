@@ -1,10 +1,11 @@
 import Axios, { AxiosError, AxiosResponse } from 'axios';
 import { getToken, getTokenRf, saveToken ,saveTokenRf } from './asyncStorage';
 import { refeshToken } from '../api/refeshToken';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const axiosInstance = Axios.create({
   timeout: 3 * 60 * 1000,
-  baseURL: "http://192.168.2.143:3000/api/",
+  baseURL: "http://192.168.31.11:3000/api/",
 });
 
 axiosInstance.interceptors.request.use(
@@ -36,8 +37,8 @@ axiosInstance.interceptors.response.use(
         const res = await refeshToken(rfToken);
         await saveToken(res.accessToken);
       } catch(error: any){
-        await saveToken("");
-        await saveTokenRf("");
+        await AsyncStorage.removeItem('authToken');
+        await AsyncStorage.removeItem('refeshToken');
         alert(data.mes);
       }
       
