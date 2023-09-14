@@ -50,16 +50,15 @@ const Registration = ({navigation}) => {
 
          <View style={styles.inputPhone}>
          <AntDesign style={styles.icon} name="phone" size={14} color="#b37700" />
-         <TextInput
-           placeholder="Số điện thoại"
-           secureTextEntry
+         <TextInput style = {{ width: '100%', height: '100%'}}
+           placeholder="Số điện thoại" 
            value={phoneNumber}
            onChangeText={setPhoneNumber}
           />
          </View>
          <View style={styles.inputEmail}>
          <AntDesign style={styles.icon} name="user" size={14} color="#b37700" />
-         <TextInput
+         <TextInput style = {{ width: '100%', height: '100%'}}
            placeholder="Email"
            value={email}
            onChangeText={setEmail}
@@ -67,7 +66,7 @@ const Registration = ({navigation}) => {
          </View>
          <View style={styles.inputPass}>
          <MaterialCommunityIcons style={styles.icon} name="form-textbox-password" size={14} color="#b37700" />
-         <TextInput
+         <TextInput style = {{ width: '100%', height: '100%'}}
            placeholder="Mật khẩu"
            secureTextEntry
            value={password}

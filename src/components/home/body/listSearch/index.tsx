@@ -8,7 +8,7 @@ import { selectClick, selectCategory, selectSearch } from '../../../../store/use
 import { getStars } from '../../../../api/reviews';
 import { deleteListLike, getListLike, saveListLike } from '../../../../utils/asyncStorage';
 
-const ProductList = ({route}) => {
+const ProductListSearch = ({route}) => {
   const category = useSelector(selectCategory);
   const search = useSelector(selectSearch);
   const click = useSelector(selectClick);
@@ -22,7 +22,6 @@ const ProductList = ({route}) => {
   useEffect(() => {
     const fetchProduct = async () => {
       const list = await getListLike();
-
       if(list !== null){
         setLikes(JSON.parse(list));
       }
@@ -50,11 +49,11 @@ const ProductList = ({route}) => {
   // , [data])
 
   const productFilter: any = useMemo(() => {
-    if(category !== '' && click) {
-      return data.filter(p => p.category === category)
+    if(search !== '') {
+      return data.filter(p => p.name.includes(search))
     }
     return data;
-  }, [change, category, click])
+  }, [change, search])
    const handlePick = () => {
       if(pick){
         setPick(false);
@@ -209,4 +208,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductList;
+export default ProductListSearch;

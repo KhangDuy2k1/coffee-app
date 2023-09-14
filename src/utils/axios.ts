@@ -2,6 +2,7 @@ import Axios, { AxiosError, AxiosResponse } from 'axios';
 import { getToken, getTokenRf, saveToken ,saveTokenRf } from './asyncStorage';
 import { refeshToken } from '../api/refeshToken';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DevSettings } from 'react-native';
 
 const axiosInstance = Axios.create({
   timeout: 3 * 60 * 1000,
@@ -32,18 +33,21 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const data: any = error.response?.data;
     const rfToken = await getTokenRf();
-    if (data?.success === false && data?.mes === "jwt expired") {
+    console.log(data?.mes)
+    if (data?.success === false && data?.error === "jwt expired") {
       try{
         const res = await refeshToken(rfToken);
         await saveToken(res.accessToken);
+        DevSettings.reload();
       } catch(error: any){
         await AsyncStorage.removeItem('authToken');
         await AsyncStorage.removeItem('refeshToken');
+        DevSettings.reload();
         alert(data.mes);
       }
       
-    }
   }
+}
 );
 
 

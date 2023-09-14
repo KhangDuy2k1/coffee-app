@@ -1,15 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import {SafeAreaView, StyleSheet, View, Text, Image, Button, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {SafeAreaView, StyleSheet, View, Text, Image, Button, TouchableOpacity,} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AntDesign } from '@expo/vector-icons'; 
 import { PaymentOff, PaymentOn } from '../../api/payment';
 import { RadioButton } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons'; 
+import { pay } from '../../api/wallet';
+import { AxiosError } from 'axios';
+import Modal from 'react-native-modal';
+import socket from '../../utils/socket';
 const Detail = ({navigation, data }) => {
+  const [isModalVisible, setModalVisible] = useState(false);
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const [soluong, setSoluong] = useState<number>(0);
   const [form, setForm] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState('option1');
+  
+  const scrollToBottom = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
   const handlePaymentPress = async () => {
     if(soluong <= 0){
       return alert("chưa nhập sô lượng");
@@ -20,7 +35,7 @@ const Detail = ({navigation, data }) => {
     const param: any= {
       "coffeeitem_id": data.id,
       "quantity": soluong,
-      "total": soluong
+      "total": data.price * soluong
     }
     try{
       if(selectedValue === 'off'){
@@ -30,17 +45,22 @@ const Detail = ({navigation, data }) => {
         }
       }
       if(selectedValue === 'on'){
-        const res = await PaymentOn(param);
+        const res = await pay(data.id, param,);
         if(res){
           alert(res.mes);
         }
       }  
+      if(selectedValue !== 'on' && selectedValue !== 'off'){
+          return alert("chưa chọn phương thức thanh toán");
+      }
+      socket.emit('order-success', data.name)
       
-    }catch(error){
-      alert("thanh toán không thành công");
+    }catch(err: AxiosError){
+      alert("Số tiền trong ví hiện tại không đủ");
     }
   }
   const handlePlus = () => {
+    
     const current: number = soluong + 1;
     setSoluong(current)
   }
@@ -61,14 +81,39 @@ const Detail = ({navigation, data }) => {
     return setForm(true)
 
   }
+  const ModalForm = () => {
+    return (
+       <Modal
+       isVisible={isModalVisible}
+       backdropOpacity={0.7}
+       onBackdropPress={toggleModal}
+       style={{ justifyContent: 'center', alignItems: 'center'}}
+     >
+       <View style={{ backgroundColor: 'white', padding: 20, height: '35%', width: '80%', borderRadius: 10}}>
+     <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }} >Phương thức thanh toán</Text>
+     <RadioButton.Group
+             onValueChange={(value) => setSelectedValue(value)}
+             value={selectedValue}
+      >
+            <RadioButton.Item style={style.label} labelStyle={{ fontSize: 10 }} label="Thanh toán trực tiếp" value="off" />
+            <RadioButton.Item style={style.label} labelStyle={{ fontSize: 10 }} label="Thanh toán trực tuyến" value="on" />
+          </RadioButton.Group>
+       </View>
+     </Modal>
+    )
+  }
   
   return (
-    <SafeAreaView style={{backgroundColor: 'white', flex: 1, width: "100%"}}>
+    <SafeAreaView style={{backgroundColor: 'white', flex: 1, width: "100%"}} >
       <View style={style.header}>
         <Icon name="arrow-back-ios" size={28}  onPress={navigation.goBack}/>
         <Text style={{fontSize: 20, fontWeight: 'bold'}}>Details</Text>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} ref={scrollViewRef}
+         onContentSizeChange={(contentWidth, contentHeight) => {
+          scrollToBottom();
+        }}
+      >
         <View
           style={{
             justifyContent: 'center',
@@ -100,7 +145,6 @@ const Detail = ({navigation, data }) => {
             {data.volume} mil
           </Text>
           <View style={{marginTop: 40, marginBottom: 40}}>
-            {/* <SecondaryButton title="Add To Cart" /> */}
             <Text style={style.text}>
             {data.price} vnd
           </Text>
@@ -116,21 +160,14 @@ const Detail = ({navigation, data }) => {
           <AntDesign name="plus" size={20} color="#b37700" />
           </TouchableOpacity>
           </View>
+          <Text style= {{ textAlign: 'center', fontSize: 16, marginTop: 10}}>Tổng Tiền: {data.price * soluong} Vnd</Text>
           <View style={style.containerButtonTt}>
-          <TouchableOpacity style={style.button1Tt} onPress={handleFormThanhToan} >
+          <TouchableOpacity style={style.button1Tt} onPress={toggleModal} >
            <MaterialIcons name="attach-money" size={20} color="#ffc266" />
            <Text style={style.buttonText}>Phương thức thanh toán</Text>
           </TouchableOpacity>
           </View>
-          {form && <>
-          <RadioButton.Group
-             onValueChange={(value) => setSelectedValue(value)}
-             value={selectedValue}
-      >
-            <RadioButton.Item style={style.label} labelStyle={{ fontSize: 10 }} label="Thanh toán trực tiếp" value="off" />
-            <RadioButton.Item style={style.label} labelStyle={{ fontSize: 10 }} label="Thanh toán trực tuyến" value="on" />
-          </RadioButton.Group>
-      </>}
+          {isModalVisible && ModalForm()}
           <View style={style.containerButton}>
           <TouchableOpacity style={style.button1} onPress={handlePaymentPress} >
           <MaterialIcons name="money" size={20} color="#ffc266" />
@@ -198,9 +235,9 @@ const style = StyleSheet.create({
   },
   label:{
     height: 50,
-    marginTop: 10,
-    width: "80%",
-    backgroundColor: 'white',
+    marginTop: 20,
+    width: "90%",
+    backgroundColor: '#ffa64d',
     borderRadius: 40,
     borderColor: 'black',
     alignSelf: 'center'

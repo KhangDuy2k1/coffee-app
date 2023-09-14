@@ -16,7 +16,7 @@ const SearchModal = () => {
   return (
     <View style={styles.container}>
          <View style={styles.input}>
-         <TextInput
+         <TextInput style={{ height: 40, width: '90%'}}
            placeholder="Tìm Kiếm"
            value={text}
            onChangeText={setText}

@@ -17,22 +17,34 @@ const categories: ICategory[] = [
 const CategoryList = () => {
   const [id, setId] = useState(null);
   const click = useSelector(selectClick);
+  const cate = useSelector(selectCategory);
   const [data, setData] = useState([]);
   const dispatch = useDispatch();
   const handlePress = (item: any) => {
-    setId(item.id);
-    dispatch(updateClick(item.title));
-    dispatch(updateCategory(item._id));
+    if(cate === item._id && click){
+      dispatch(updateCategory(""));
+      dispatch(updateClick(item.title));
+    }else if(cate !== item._id && click){
+      setId(item._id);
+      dispatch(updateCategory(item._id));
+    }
+    else {
+      setId(item._id);
+      dispatch(updateClick(item.title));
+      dispatch(updateCategory(item._id));
+    }
   };
   useEffect(() => {
     const fetchCategory = async () => {
       const res = await getCategory();
-      setData(res.allcategory);
+
+      setData(res.allcategory)
+    
     }
     fetchCategory()
   },[]);
   const renderItem = ({ item }) => {
-    const sameId = item.id === id; 
+    const sameId = item._id === id; 
     return (
     <TouchableOpacity onPress={() => handlePress(item)}  style={sameId && click ? styles.categoryItemClick : styles.categoryItem}>
       <Text style={styles.categoryText}>{item.title}</Text>

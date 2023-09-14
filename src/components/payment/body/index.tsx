@@ -5,11 +5,16 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { review } from '../../../api/reviews';
+import { refund } from '../../../api/wallet';
+import ModalNoti from '../../../modal/nofi';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectIsModalVisible, updateisModalVisible} from '../../../store/userslice';
 const Body = () => {
   const [data, setData] = useState([]);
   const [update, setupdate] = useState<boolean>(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [rating, setRating] = useState<number>(0); // Điểm đánh giá ban đầu
+  
 
   const handleRating = (stars:number) => {
     setRating(stars);
@@ -31,10 +36,16 @@ const Body = () => {
      
     }
     fetchPayment();
-  },[update]);
-  const handleCancelOrder = async (id:string) => {
+  },);
+  const handleCancelOrder = async (id:string, status: string) => {
+    let res;
     try{
-        const res = await PaymentCancel(id);
+        if(status === "đã đặt hàng"){
+          res = await PaymentCancel(id);
+        }
+        if(status === "đã thanh toán"){
+           res = await refund(id);
+        }
         if(res){
           if(update){
             setupdate(false);
@@ -42,8 +53,7 @@ const Body = () => {
             setupdate(true);
           }
           alert(res.mes);
-        }    
-      
+        }  
     }catch(error){
       alert("thanh toán không thành công");
     }
@@ -75,8 +85,6 @@ const Body = () => {
       }
   }
   const renderItem = ({ item }) => {
-
-    
     return (
       <View style={styles.product}>
       <Image source={{uri: item.coffeeItem_id.image}} style={styles.productImage} />
@@ -93,7 +101,7 @@ const Body = () => {
         {item.status !== "giao hàng thành công"  && item.status !== "đã hủy" && <>
          <View>
          <TouchableOpacity style={styles.button1} onPress={() => {
-          handleCancelOrder(item._id)}} >
+          handleCancelOrder(item._id, item.status)}} >
              <MaterialIcons style={{marginLeft: 10}} name="cancel" size={20} color="#ffc266" />
              <Text style={styles.buttonText1}>Hủy</Text>
           </TouchableOpacity>
@@ -115,7 +123,7 @@ const Body = () => {
       >
         <View style={{ backgroundColor: 'white', padding: 20, height: '25%', width: '70%', borderRadius: 10}}>
       <View>
-      <Text style={{ textAlign: 'center', fontSize: '20', fontWeight: 'bold' }} >Đánh giá sản phẩm:</Text>
+      <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }} >Đánh giá sản phẩm:</Text>
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10}}>
         {[1, 2, 3, 4, 5].map((star) => (
           <TouchableOpacity
@@ -152,7 +160,6 @@ const Body = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
-
     </View>
   );
 };

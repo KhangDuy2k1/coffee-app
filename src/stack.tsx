@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './screens/login';
@@ -12,9 +12,10 @@ import DetailKmScreen from './screens/detailKm';
 import PayScreen from './screens/pay';
 import RegisterScreen from './screens/register';
 import { getToken,  } from './utils/asyncStorage';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectUsername } from './store/userslice';
+import Header from './components/home/header';
 const Stack = createStackNavigator();
 export default function MainStack() {
   const [userToken, setUserToken] = useState<string | null>();
@@ -26,6 +27,7 @@ export default function MainStack() {
     }
     token();
   }, [username]);
+  
 
   return (
     <Stack.Navigator screenOptions={{
@@ -34,7 +36,9 @@ export default function MainStack() {
       
        {userToken ? (
        <>
-        <Stack.Screen name="Tab" component={BottomTabNavigator} />
+        <Stack.Screen name="Tab" component={BottomTabNavigator}  options={{
+    headerTitle: () => null, // Đặt tiêu đề thành trống
+  }} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Detail" component={DetailScreen} />
         <Stack.Screen name="DetailKm" component={DetailKmScreen} />

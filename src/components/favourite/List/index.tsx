@@ -9,15 +9,16 @@ const ProductList = ({route}) => {
   const [products, setProducts] = useState([]);
   const [data, setData] = useState([]);
   useEffect(() => {
+   
     const fetchProduct = async () => {
       try{
         const res = await getProductLike();
         setData(res.listCoffeeLiked);
       }catch (error: any){
+        setData([]);
         alert(error.response.data.mes)
       }
-      
-     
+
     }
     fetchProduct()
   },[]);

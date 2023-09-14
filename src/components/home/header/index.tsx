@@ -3,10 +3,14 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, DevSettings } from 're
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { getToken, saveToken } from '../../../utils/asyncStorage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
-import { updateUsername } from '../../../store/userslice';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUsername, selectIsModalVisible, updateisModalVisible } from '../../../store/userslice';
 const Header = () => {
     const dispatch = useDispatch();
+    const visible = useSelector(selectIsModalVisible);
+    const toggleModalNoti = () => {
+      dispatch(updateisModalVisible(!visible))
+    };
     const Logout = async () => {
       dispatch(updateUsername(""));
       await AsyncStorage.removeItem('authToken');
@@ -24,7 +28,7 @@ const Header = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.rightContainer}>
-        <TouchableOpacity style={styles.notificationIconContainer}>
+        <TouchableOpacity style={styles.notificationIconContainer} onPress={toggleModalNoti}>
         <MaterialIcons
         name="notifications"
         size={24}

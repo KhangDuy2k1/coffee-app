@@ -15,6 +15,7 @@
     "@react-navigation/stack": "^6.3.17",
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.5.0",
+    "deprecated-react-native-prop-types": "^4.2.1",
     "expo": "~49.0.7",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
@@ -24,7 +25,8 @@
     "react-native-star-rating": "^1.1.0",
     "react-native-vector-icons": "^10.0.0",
     "react-redux": "^8.1.2",
-    "redux": "^4.2.1"
+    "redux": "^4.2.1",
+    "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

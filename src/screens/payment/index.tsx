@@ -5,7 +5,6 @@ import Header from '../../components/home/header';
 const PaymentScreen = () => {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Header/>
       <Payment />
     </View>
   );

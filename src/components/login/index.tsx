@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet,Image, SafeAreaView } from 'react-native';
 import { login } from '../../api/login';
 import { saveToken, saveTokenRf, getToken, getTokenRf, saveIdUser, saveListLike } from '../../utils/asyncStorage';
-import { updateUsername } from '../../store/userslice';
+import { updateUsername, updateInfo } from '../../store/userslice';
 import { useDispatch } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,12 +17,19 @@ const Login = ({route} ) => {
     }
     try {
       let res = await login(param);
+      const info = {
+        id: res.user._id,
+        email: res.user.email,
+        phone: res.user.phonenumber,
+        avatar: res.user.avatar
+      }
       if (res) {
         await saveToken(res.accessToken);
         await saveTokenRf(res.refreshToken);
         await saveIdUser(res.user._id);
         await saveListLike(res.user.likedCoffeeItem);
         dispatch(updateUsername(res.accessToken));
+        dispatch(updateInfo(info));
       }
     } catch (error: any) {
       alert("Đăng nhập có vấn đề");
@@ -40,7 +47,7 @@ const Login = ({route} ) => {
          <Text style={styles.login}>Đăng Nhập</Text>
          <View style={styles.inputEmail}>
          <AntDesign style={styles.icon} name="user" size={14} color="#b37700" />
-         <TextInput
+         <TextInput style = {{ width: '100%', height: '100%'}}
            placeholder="Tên đăng nhập"
            value={username}
            onChangeText={setUsername}
@@ -48,7 +55,7 @@ const Login = ({route} ) => {
          </View>
          <View style={styles.inputPass}>
          <MaterialCommunityIcons style={styles.icon} name="form-textbox-password" size={14} color="#b37700" />
-         <TextInput
+         <TextInput style = {{ width: '100%', height: '100%'}}
            placeholder="Mật khẩu"
            secureTextEntry
            value={password}
