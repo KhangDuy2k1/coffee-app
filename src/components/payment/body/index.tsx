@@ -29,14 +29,13 @@ const Body = () => {
         setData(res.orders.order);
       }catch (error: any){
         if(error.response?.status === 400 && error.response?.data.success === false){
-          alert("chưa thanh toán đơn hàng nào");
         }
       }
       
      
     }
     fetchPayment();
-  },);
+  });
   const handleCancelOrder = async (id:string, status: string) => {
     let res;
     try{
@@ -55,7 +54,6 @@ const Body = () => {
           alert(res.mes);
         }  
     }catch(error){
-      alert("thanh toán không thành công");
     }
   }
     const danhgia = async (id: string) => {

@@ -119,6 +119,7 @@ const Detail = ({navigation, data }) => {
             justifyContent: 'center',
             alignItems: 'center',
             height: 280,
+            backgroundColor: "'
           }}>
           <Image source={{uri: data.image}} style={{height: 220, width: 220, borderRadius: 30}} />
         </View>
@@ -130,7 +131,7 @@ const Detail = ({navigation, data }) => {
               alignItems: 'center',
             }}>
             <Text
-              style={{fontSize: 25, fontWeight: 'bold', color: 'white'}}>
+              style={{fontSize: 25, fontWeight: 'bold', color: '#000000'}}>
               Capuchino
             </Text>
             <View style={style.iconContainer}>
@@ -153,14 +154,14 @@ const Detail = ({navigation, data }) => {
     </View>
           <View style={style.sl}>
           <TouchableOpacity style={style.plus} onPress={handleMinus}>
-          <AntDesign name="minus" size={20} color="#b37700" />
+          <AntDesign name="minus" size={30} color="#b37700" />
           </TouchableOpacity>
-          <Text style={{ fontSize: 20, color: 'red'}}>{soluong}</Text>
+          <Text style={{ fontSize: 30, color: 'red'}}>{soluong}</Text>
           <TouchableOpacity style={style.minus} onPress={handlePlus}>
-          <AntDesign name="plus" size={20} color="#b37700" />
+          <AntDesign name="plus" size={30} color="#b37700" />
           </TouchableOpacity>
           </View>
-          <Text style= {{ textAlign: 'center', fontSize: 16, marginTop: 10}}>Tổng Tiền: {data.price * soluong} Vnd</Text>
+          <Text style= {{ textAlign: 'center', fontSize: 20, marginTop: 10}}>Tổng Tiền: {data.price * soluong} Vnd</Text>
           <View style={style.containerButtonTt}>
           <TouchableOpacity style={style.button1Tt} onPress={toggleModal} >
            <MaterialIcons name="attach-money" size={20} color="#ffc266" />
@@ -185,13 +186,12 @@ const style = StyleSheet.create({
     paddingVertical: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 20,
   },
   details: {
     paddingHorizontal: 20,
     paddingTop: 40,
     paddingBottom: 60,
-    backgroundColor: '#e0e0d1',
+    backgroundColor: '#FFF8DC',
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
   },
@@ -207,7 +207,7 @@ const style = StyleSheet.create({
     marginTop: 10,
     lineHeight: 22,
     fontSize: 16,
-    color: 'white',
+    color: '#000000',
   },
   text: {
 
@@ -269,13 +269,13 @@ const style = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
-    marginLeft: 5,
+    marginLeft: "15%",
     alignSelf: 'center',
     color: 'white',
     fontSize: 16,
   },
   buttonText1: {
-    marginLeft: 50,
+    marginLeft: "30%",
     alignSelf: 'center',
     color: 'white',
     fontSize: 16,

@@ -14,6 +14,7 @@ const Registration = ({navigation}) => {
     const isValid = emailRegex.test(text);
     setEmail(text);
     setIsValidEmail(isValid);
+
   };
 
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -24,6 +25,16 @@ const Registration = ({navigation}) => {
   };
 
   const handleRegister = async () => {
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+    const isValid = emailRegex.test(email);
+    const currencyPattern = /^\d+(\.\d{1,2})?$/;
+    const isValidNumber =  currencyPattern.test(phoneNumber); 
+    if(!isValid){
+      alert('email không đúng định dạng')
+    }
+    if(!isValidNumber){
+      alert('số không đúng định dạng')
+    }
     const pararm = {
       "email": email,
       "password": password,
@@ -35,7 +46,6 @@ const Registration = ({navigation}) => {
         alert(res.mes);
       }
     } catch (error: any) {
-      alert(error.response?.data.mes);
     }
   };
 
@@ -64,6 +74,7 @@ const Registration = ({navigation}) => {
            onChangeText={setEmail}
           />
          </View>
+         {!isValidEmail && <Text>Email không đúng định dạng</Text>}
          <View style={styles.inputPass}>
          <MaterialCommunityIcons style={styles.icon} name="form-textbox-password" size={14} color="#b37700" />
          <TextInput style = {{ width: '100%', height: '100%'}}

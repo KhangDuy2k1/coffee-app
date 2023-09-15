@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  //(error) => Promise.reject(console.log(error))
 );
 
 let id: NodeJS.Timeout;
@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const data: any = error.response?.data;
     const rfToken = await getTokenRf();
-    console.log(data?.mes)
+    alert(data?.mes)
     if (data?.success === false && data?.error === "jwt expired") {
       try{
         const res = await refeshToken(rfToken);

@@ -32,7 +32,6 @@ const Login = ({route} ) => {
         dispatch(updateInfo(info));
       }
     } catch (error: any) {
-      alert("Đăng nhập có vấn đề");
     }
   };
 
@@ -67,10 +66,6 @@ const Login = ({route} ) => {
            <Text style={styles.buttonText}>Đăng nhập</Text>
           </TouchableOpacity>
          <View style={styles.bottom}>
-        <TouchableOpacity>
-         <Text style={styles.textL}>Quên mật Khẩu</Text>
-         </TouchableOpacity>
-         <Text>|</Text>
          <TouchableOpacity onPress={handleRegister}>
          <Text style={styles.textR}>Tạo Tài Khoản mới</Text>
          </TouchableOpacity>
@@ -141,7 +136,7 @@ const styles = StyleSheet.create({
     marginTop: '30%',
     width: "100%",
     flexDirection: 'row',
-    justifyContent:"space-between",
+    justifyContent:"center",
   },
   textL: {
     marginLeft: 10,

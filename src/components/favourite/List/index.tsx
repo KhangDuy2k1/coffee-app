@@ -11,14 +11,12 @@ const ProductList = ({route}) => {
   useEffect(() => {
    
     const fetchProduct = async () => {
-      try{
+      try{ 
         const res = await getProductLike();
-        setData(res.listCoffeeLiked);
-      }catch (error: any){
-        setData([]);
-        alert(error.response.data.mes)
+        setData(res.listCoffeeLiked)
+      } catch (e){
+        setData([])
       }
-
     }
     fetchProduct()
   },[]);

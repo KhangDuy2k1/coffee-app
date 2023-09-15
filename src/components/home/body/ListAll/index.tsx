@@ -96,7 +96,7 @@ const ProductList = ({route}) => {
       }
       
     }catch(error){
-      alert("Có Vấn đề")
+      
     }
    }
   const renderItem =  ({ item }) => {

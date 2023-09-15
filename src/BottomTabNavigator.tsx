@@ -43,12 +43,11 @@ const Icon = () => {
     const info = useSelector(selectInfo);
 
   return (
-    <View style= {{ flexDirection: 'row', width: 350,  alignItems: 'center', justifyContent: "space-between"}}>
+    <View style= {{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, width: '100%'}}>
       <TouchableOpacity onPress={toggleModalOut}>
-      
        <Image source= {{uri: user?.avatar}} style={{width: 40, height: 40, borderRadius: 100, }} />
        </TouchableOpacity>
-       <Text style={{fontSize: 16, fontWeight: 'bold'}}>Trang Trủ</Text>
+       <Text style={{fontSize: 18, fontWeight: 'bold', marginTop: 15}}>Trang Chủ</Text>
        <TouchableOpacity style={{width: 40, height: 40, borderRadius: 100, alignItems: 'center', flexDirection: 'row'}} onPress={toggleModalNoti}>
         <MaterialIcons
         

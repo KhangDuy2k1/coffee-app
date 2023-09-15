@@ -89,7 +89,6 @@ const Me = ({navigation, param}) => {
         }
 
        } catch(error) {
-        alert("Tạo không thành công")
        }
    }
 
@@ -114,7 +113,6 @@ const Me = ({navigation, param}) => {
         }
 
        } catch(error) {
-        alert("nạp tiền không thành công")
        }
 
    }
@@ -176,16 +174,16 @@ const Me = ({navigation, param}) => {
         <View style = {styles.info}>
             <Text style={{fontSize: 20, fontWeight: 'bold', marginTop: 10, marginBottom: 10, color: '#c68c53'}}>Thông tin cá nhân</Text>
             <View style={styles.text}>
-            <Text style={{color: '#aa80ff'}}>Email: </Text>
-            <Text style={{color: '#ff4dd2'}}>{user?.email}</Text>
+            <Text style={{color: '#aa80ff', fontSize: 20,}}>Email: </Text>
+            <Text style={{color: '#ff4dd2', fontSize: 20,}}>{user?.email}</Text>
             </View>
             <View style={styles.text}>
-            <Text style={{color: '#aa80ff'}}>Số Điện Thoại: </Text>
-            <Text style={{color: '#ff4dd2'}}>{user?.phonenumber}</Text>
+            <Text style={{color: '#aa80ff', fontSize: 20,}}>Số Điện Thoại: </Text>
+            <Text style={{color: '#ff4dd2', fontSize: 20,}}>{user?.phonenumber}</Text>
             </View>
             <View style={styles.text}>
-            <Text style={{color: '#aa80ff'}}>Số tiền dư: </Text>
-            <Text style={{color: '#ff4dd2'}}>{count} Vnd</Text>
+            <Text style={{color: '#aa80ff', fontSize: 20,}}>Số tiền dư: </Text>
+            <Text style={{color: '#ff4dd2', fontSize: 20,}}>{count} Vnd</Text>
             </View>
             {!wallet ?
               <TouchableOpacity style={styles.button} onPress={toggleModal}>
