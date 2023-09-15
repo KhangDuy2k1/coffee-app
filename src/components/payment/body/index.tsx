@@ -12,9 +12,12 @@ import { selectIsModalVisible, selectUp, selectUpPayment, updateUp, updateUpPaym
 const Body = ({navigation}) => {
   const [data, setData] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [id, setId] = useState("");
   const [rating, setRating] = useState<number>(0); // Điểm đánh giá ban đầu
   
   const up = useSelector(selectUpPayment);
+  const upLike = useSelector(selectUp);
+  
   const dispatch = useDispatch();
 
 
@@ -65,19 +68,19 @@ const Body = ({navigation}) => {
     }
   }
     const danhgia = async (id: string) => {
-      console.log(id)
       const faram: any = {
         'stars': rating
       }
       const res = await review(id,faram);
       if(res){
         toggleModal();
-        dispatch(updateUp(up));
+        dispatch(updateUp(upLike));
         alert(res.mes)
       }
     }
    
-    const handleRevlOrder = async (id:string) => {
+    const handleRevlOrder = async (id:string,  ipCoffe: string) => {
+      setId(ipCoffe);
       try{
           const res = await PaymentRecv(id);
           if(res){
@@ -85,9 +88,49 @@ const Body = ({navigation}) => {
             dispatch(updateUpPayment(up))
           }    
 
+
       }catch(error){
         alert("thanh toán không thành công");
       }
+  }
+  const ModalReview = (id: string) => {
+    return(
+<Modal
+        isVisible={isModalVisible}
+        backdropOpacity={0.7}
+        onBackdropPress={toggleModal}
+        style={{ justifyContent: 'center', alignItems: 'center'}}
+      >
+        <View style={{ backgroundColor: 'white', padding: 20, height: '25%', width: '70%', borderRadius: 10}}>
+      <View>
+      <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }} >Đánh giá sản phẩm:</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10}}>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <TouchableOpacity
+            key={star}
+            onPress={() => handleRating(star)}
+          >
+            <Icon
+              name={star <= rating ? 'star' : 'star-o'}
+              size={30}
+              color="gold"
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+      <View style={{ flexDirection: 'row', justifyContent: "space-between", marginTop: 25}}>
+      <TouchableOpacity  onPress={toggleModal}>
+            <Text style={{ color: 'red' }}>Thoát</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => danhgia(id)}>
+            <Text style={{ color: 'red' }}>Đánh Giá</Text>
+          </TouchableOpacity>
+      </View>
+          
+        </View>
+      </Modal>
+    )
   }
   const renderItem = ({ item }) => {
 
@@ -112,7 +155,7 @@ const Body = ({navigation}) => {
              <MaterialIcons style={{marginLeft: 10}} name="cancel" size={20} color="#ffc266" />
              <Text style={styles.buttonText1}>Hủy</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button2} onPress={() => handleRevlOrder(item._id)} >
+          <TouchableOpacity style={styles.button2} onPress={() => handleRevlOrder(item._id, item.coffeeItem_id?._id)} >
              <MaterialIcons style={{marginLeft: 10}} name="done" size={20} color="#ffc266" />
              <Text style={styles.buttonText1}>Nhận</Text>
           </TouchableOpacity>
@@ -122,43 +165,7 @@ const Body = ({navigation}) => {
         </View>
       
       </View>
-      <Modal
-        isVisible={isModalVisible}
-        backdropOpacity={0.7}
-        onBackdropPress={toggleModal}
-        style={{ justifyContent: 'center', alignItems: 'center'}}
-      >
-        <View style={{ backgroundColor: 'white', padding: 20, height: '25%', width: '70%', borderRadius: 10}}>
-      <View>
-      <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }} >Đánh giá sản phẩm:</Text>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10}}>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <TouchableOpacity
-            key={star}
-            onPress={() => handleRating(star)}
-          >
-            <Icon
-              name={star <= rating ? 'star' : 'star-o'}
-              size={30}
-              color="gold"
-            />
-          </TouchableOpacity>
-          
-        ))}
-      </View>
-    </View>
-      <View style={{ flexDirection: 'row', justifyContent: "space-between", marginTop: 25}}>
-      <TouchableOpacity  onPress={toggleModal}>
-            <Text style={{ color: 'red' }}>Thoát</Text>
-            <Text>{item.coffeeItem_id._id}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => danhgia(item.coffeeItem_id._id)}>
-            <Text style={{ color: 'red' }}>Đánh Giá</Text>
-          </TouchableOpacity>
-      </View>
-          
-        </View>
-      </Modal>
+      {isModalVisible && ModalReview(id)}
     </View>
     )};
 

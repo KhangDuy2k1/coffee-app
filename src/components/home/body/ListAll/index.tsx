@@ -3,18 +3,19 @@ import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, DevSettings 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getProduct, likeById, unLikeById } from '../../../../api/product'
 import StarRating from 'react-native-star-rating';
-import { useSelector } from "react-redux";
-import { selectClick, selectCategory, selectSearch, selectUp } from '../../../../store/userslice';
+import { useDispatch, useSelector } from "react-redux";
+import { selectClick, selectCategory, selectSearch, selectUp, updateUp } from '../../../../store/userslice';
 import { getStars } from '../../../../api/reviews';
 import { deleteListLike, getListLike, saveListLike } from '../../../../utils/asyncStorage';
 
 const ProductList = ({route}) => {
-
+  const dispatch = useDispatch();
   const up = useSelector(selectUp);
   const category = useSelector(selectCategory);
   const search = useSelector(selectSearch);
   const click = useSelector(selectClick);
   const [data, setData] = useState<any[]>([]);
+  const [update, setUpdate] = useState(false);
   const [change, setChange] = useState<string>();
   const [likes, setLikes] = useState<any[] | null>([]);
   const handlePress = (formDetail: any) => {
@@ -30,46 +31,28 @@ const ProductList = ({route}) => {
 
         setLikes(JSON.parse(list));
       }
-
       const res = await getProduct();
       setData(res.allCoffee.allCoffee);
-      console.log(res.allCoffee.allCoffee);
-
       setChange("check");
     }
     fetchProduct()
   },[]);
-
-  // const dataId = useMemo(() => 
-  //   data.map((d, id) => {
-  //     return {
-  //       "id": id,
-  //       "_id": d._id,
-  //       "category": d.category,
-  //       "desc": d.desc,
-  //       "image": d.image,
-  //       "name": d.name,
-  //       "price": d.price,
-  //       "stars": d.stars,
-  //       "volume": d.volume
-
-  //     }
-  //   })
-  // , [data])
   useEffect(() => {
-    
     const fetchProduct = async () => {
       const res = await getProduct();
+      console.log(res.allCoffee.allCoffee);
       setData(res.allCoffee.allCoffee);
+      setUpdate(!update);
     }
     fetchProduct()
   }, [up]);
   const productFilter: any = useMemo(() => {
     if(category !== '' && click) {
       return data.filter(p => p.category._id === category)
+
     }
     return data;
-  }, [change, category, click])
+  }, [change, category, click, up])
    const handlePick = () => {
       if(pick){
         setPick(false);
