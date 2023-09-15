@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, DevSettings } from 'react-native';
 import { PaymentCancel, PaymentRecv, getPayment, } from '../../../api/payment';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import Modal from 'react-native-modal';
@@ -8,19 +8,24 @@ import { review } from '../../../api/reviews';
 import { refund } from '../../../api/wallet';
 import ModalNoti from '../../../modal/nofi';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectIsModalVisible, updateisModalVisible} from '../../../store/userslice';
-const Body = () => {
+import { selectIsModalVisible, selectUp, selectUpPayment, updateUp, updateUpPayment, updateisModalVisible} from '../../../store/userslice';
+const Body = ({navigation}) => {
   const [data, setData] = useState([]);
-  const [update, setupdate] = useState<boolean>(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [rating, setRating] = useState<number>(0); // Điểm đánh giá ban đầu
   
+  const up = useSelector(selectUpPayment);
+  const dispatch = useDispatch();
+
+
 
   const handleRating = (stars:number) => {
     setRating(stars);
   };
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
+
   };
   useEffect(() => {
     const fetchPayment = async () => {
@@ -31,38 +36,44 @@ const Body = () => {
         if(error.response?.status === 400 && error.response?.data.success === false){
         }
       }
-      
-     
     }
     fetchPayment();
-  });
+  }, []);
+  useEffect(() => {
+    const fetchPayment = async () => {
+        const res = await getPayment();
+        setData(res.orders.order);
+    }
+    fetchPayment();
+  }, [up]);
   const handleCancelOrder = async (id:string, status: string) => {
     let res;
     try{
         if(status === "đã đặt hàng"){
           res = await PaymentCancel(id);
+         
+
         }
         if(status === "đã thanh toán"){
            res = await refund(id);
+
         }
         if(res){
-          if(update){
-            setupdate(false);
-          }else{
-            setupdate(true);
-          }
-          alert(res.mes);
+          dispatch(updateUpPayment(up))
         }  
     }catch(error){
     }
   }
     const danhgia = async (id: string) => {
+      console.log(id)
       const faram: any = {
         'stars': rating
       }
       const res = await review(id,faram);
       if(res){
         toggleModal();
+        dispatch(updateUp(up));
+        alert(res.mes)
       }
     }
    
@@ -70,32 +81,30 @@ const Body = () => {
       try{
           const res = await PaymentRecv(id);
           if(res){
-            if(update){
-              setupdate(false);
-            }else{
-              setupdate(true);
-            }
             toggleModal();
+            dispatch(updateUpPayment(up))
           }    
-        
+
       }catch(error){
         alert("thanh toán không thành công");
       }
   }
   const renderItem = ({ item }) => {
+
     return (
       <View style={styles.product}>
-      <Image source={{uri: item.coffeeItem_id.image}} style={styles.productImage} />
+      <Image source={{uri: item.coffeeItem_id?.image}} style={styles.productImage} />
       <View
         style={styles.productName}>
         <View>
-        <Text style={{height: 20, fontWeight: 'bold', fontSize: 16, }}>{item.coffeeItem_id.name}</Text>
-        <Text style={ {fontSize: 14}}>{item.coffeeItem_id.name}</Text>
-        <Text style={{marginTop: 5, fontSize: 17, color: '#dfbf9f', alignSelf: 'center'}}>Số lượng : {item.quantity}</Text>
-        <Text style={{marginTop: 5,  fontSize: 14, fontWeight: 'bold', color: '#ffdb4d'}}>{item.coffeeItem_id.price} VND</Text>
+        <Text style={{height: 20, fontWeight: 'bold', fontSize: 16, }}>{item.coffeeItem_id?.name}</Text>
+        {/* <Text style={{height: 20, fontWeight: 'bold', fontSize: 16, }}>{item.coffeeItem_id?._id}</Text> */}
+        <Text style={ {fontSize: 14}}>{item.coffeeItem_id?.name}</Text>
+        <Text style={{marginTop: 5, fontSize: 17, color: '#dfbf9f', alignSelf: 'center'}}>Số lượng : {item?.quantity}</Text>
+        <Text style={{marginTop: 5,  fontSize: 14, fontWeight: 'bold', color: '#ffdb4d'}}>{item.coffeeItem_id?.price} VND</Text>
         </View>
         <View style={{marginLeft: 20, width: 100}}>
-        <Text style={item.status === "đã hủy" ? styles.statusDaHuy : styles.status}>{item.status}</Text>
+        <Text style={item.status === "đã hủy" ? styles.statusDaHuy : styles.status}>{item?.status}</Text>
         {item.status !== "giao hàng thành công"  && item.status !== "đã hủy" && <>
          <View>
          <TouchableOpacity style={styles.button1} onPress={() => {
@@ -134,12 +143,14 @@ const Body = () => {
               color="gold"
             />
           </TouchableOpacity>
+          
         ))}
       </View>
     </View>
       <View style={{ flexDirection: 'row', justifyContent: "space-between", marginTop: 25}}>
       <TouchableOpacity  onPress={toggleModal}>
             <Text style={{ color: 'red' }}>Thoát</Text>
+            <Text>{item.coffeeItem_id._id}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => danhgia(item.coffeeItem_id._id)}>
             <Text style={{ color: 'red' }}>Đánh Giá</Text>

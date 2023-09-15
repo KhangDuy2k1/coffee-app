@@ -10,12 +10,16 @@ import { pay } from '../../api/wallet';
 import { AxiosError } from 'axios';
 import Modal from 'react-native-modal';
 import socket from '../../utils/socket';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUp, selectUpPayment, updateUpPayment } from '../../store/userslice';
 const Detail = ({navigation, data }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [soluong, setSoluong] = useState<number>(0);
   const [form, setForm] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState('option1');
+  const upPayment = useSelector(selectUpPayment);
+  const dispatch = useDispatch();
   
   const scrollToBottom = () => {
     if (scrollViewRef.current) {
@@ -41,12 +45,14 @@ const Detail = ({navigation, data }) => {
       if(selectedValue === 'off'){
         const res = await PaymentOff(param);
         if(res){
+          dispatch(updateUpPayment(upPayment));
           alert(res.mes);
         }
       }
       if(selectedValue === 'on'){
-        const res = await pay(data.id, param,);
+        const res = await pay(data.id, param);
         if(res){
+          dispatch(updateUpPayment(upPayment));
           alert(res.mes);
         }
       }  
@@ -110,16 +116,12 @@ const Detail = ({navigation, data }) => {
         <Text style={{fontSize: 20, fontWeight: 'bold'}}>Details</Text>
       </View>
       <ScrollView showsVerticalScrollIndicator={false} ref={scrollViewRef}
-         onContentSizeChange={(contentWidth, contentHeight) => {
-          scrollToBottom();
-        }}
       >
         <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',
             height: 280,
-            backgroundColor: "'
           }}>
           <Image source={{uri: data.image}} style={{height: 220, width: 220, borderRadius: 30}} />
         </View>
@@ -132,7 +134,7 @@ const Detail = ({navigation, data }) => {
             }}>
             <Text
               style={{fontSize: 25, fontWeight: 'bold', color: '#000000'}}>
-              Capuchino
+              {data.name}
             </Text>
             <View style={style.iconContainer}>
               <Icon name="favorite-border" color={data.like ? 'red' : 'black'} size={25} />

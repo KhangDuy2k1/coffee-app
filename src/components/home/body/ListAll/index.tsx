@@ -4,11 +4,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { getProduct, likeById, unLikeById } from '../../../../api/product'
 import StarRating from 'react-native-star-rating';
 import { useSelector } from "react-redux";
-import { selectClick, selectCategory, selectSearch } from '../../../../store/userslice';
+import { selectClick, selectCategory, selectSearch, selectUp } from '../../../../store/userslice';
 import { getStars } from '../../../../api/reviews';
 import { deleteListLike, getListLike, saveListLike } from '../../../../utils/asyncStorage';
 
 const ProductList = ({route}) => {
+
+  const up = useSelector(selectUp);
   const category = useSelector(selectCategory);
   const search = useSelector(selectSearch);
   const click = useSelector(selectClick);
@@ -16,6 +18,7 @@ const ProductList = ({route}) => {
   const [change, setChange] = useState<string>();
   const [likes, setLikes] = useState<any[] | null>([]);
   const handlePress = (formDetail: any) => {
+    
     route.navigate('Detail', { data: formDetail });
   };
   const [pick, setPick] = useState(false);
@@ -24,15 +27,19 @@ const ProductList = ({route}) => {
       const list = await getListLike();
 
       if(list !== null){
+
         setLikes(JSON.parse(list));
       }
+
       const res = await getProduct();
       setData(res.allCoffee.allCoffee);
+      console.log(res.allCoffee.allCoffee);
+
       setChange("check");
     }
     fetchProduct()
   },[]);
-  
+
   // const dataId = useMemo(() => 
   //   data.map((d, id) => {
   //     return {
@@ -45,13 +52,21 @@ const ProductList = ({route}) => {
   //       "price": d.price,
   //       "stars": d.stars,
   //       "volume": d.volume
+
   //     }
   //   })
   // , [data])
-
+  useEffect(() => {
+    
+    const fetchProduct = async () => {
+      const res = await getProduct();
+      setData(res.allCoffee.allCoffee);
+    }
+    fetchProduct()
+  }, [up]);
   const productFilter: any = useMemo(() => {
     if(category !== '' && click) {
-      return data.filter(p => p.category === category)
+      return data.filter(p => p.category._id === category)
     }
     return data;
   }, [change, category, click])
@@ -81,7 +96,6 @@ const ProductList = ({route}) => {
       }else {
         res = await likeById(id);
         if(res){
-          
           const list: string[] = likes ?? [];
           list.push(id)
           setLikes(list);

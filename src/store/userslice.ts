@@ -6,6 +6,8 @@ const initialState: any = {
   username: '',
   isModalVisible: false,
   isModalOut: false,
+  update: false,
+  updatePayment: false,
   info: {},
   category: '',
   search: '',
@@ -21,11 +23,18 @@ export const userSlice = createSlice({
     updateUsername: (state, action) => {
       state.username = action.payload;
     },
+    updateUp: (state, action) => {
+      state.update = !action.payload;
+    },
+    updateUpPayment: (state, action) => {
+      state.updatePayment = !action.payload;
+    },
     updateInfo: (state, action) => {
       state.info= action.payload;
     },
     updateisModalVisible: (state, action) => {
       state.isModalVisible= action.payload;
+      
     },
     updateisModalVisibleOut: (state, action) => {
       state.isModalVisibleOut= action.payload;
@@ -59,7 +68,10 @@ export const { updateClick } = userSlice.actions;
 export const { updateCategory } = userSlice.actions;
 export const { updateSearch } = userSlice.actions;
 export const { updateMessage } = userSlice.actions;
+export const { updateUp } = userSlice.actions;
+export const { updateUpPayment } = userSlice.actions;
 export const selectUsername = (state: any) => state.user.username;
+export const selectUp = (state: any) => state.user.update;
 export const selectIsModalVisible = (state: any) => state.user.isModalVisible;
 export const selectIsModalVisibleOut = (state: any) => state.user.isModalVisibleOut;
 export const selectCategory = (state: any) => state.user.category;
@@ -67,4 +79,5 @@ export const selectClick = (state: any) => state.user.click;
 export const selectSearch = (state: any) => state.user.search;
 export const selectInfo = (state: any) => state.user.info;
 export const selectMessage = (state: any) => state.user.messages;
+export const selectUpPayment = (state: any) => state.user.updatePayment;
 export default userSlice.reducer;
